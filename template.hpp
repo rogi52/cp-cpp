@@ -61,6 +61,7 @@ template < class T, class Cmp > void sort(vector< T >& a, Cmp cmp) { sort(a.begi
 template < class T > int LB(vector< T >& a, T x) { return distance(a.begin(), lower_bound(a.begin(), a.end(), x)); }
 template < class T > int UB(vector< T >& a, T x) { return distance(a.begin(), upper_bound(a.begin(), a.end(), x)); }
 template < class T > void unique(vector< T >& a) { sort(a.begin(), a.end()); a.erase(unique(a.begin(), a.end()), a.end()); }
+vector<int> iota(int n) { vector<int> a(n); iota(a.begin(), a.end(), 0); return a; }
 
 namespace scan {
     struct x0 {
@@ -91,7 +92,7 @@ template < class Head, class... Tail > int print(Head&& h, Tail&&... t) {
     cout << h; if(sizeof...(Tail)) cout << ' ';
     return print(forward<Tail>(t)...);
 }
-namespace print {
+namespace printer {
     void precision(int n) { cout << fixed << setprecision(n); }
     void flush() { cout.flush(); }
 }
