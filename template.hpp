@@ -2,11 +2,11 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-using i32 = int32_t;
-using i64 = int64_t;
+using i32 = int;
+using i64 = long long;
 using i128 = __int128;
-using u32 = unsigned int32_t;
-using u64 = unsigned int64_t;
+using u32 = unsigned int;
+using u64 = unsigned long long;
 using u128 = unsigned __int128;
 using f32 = double;
 using f64 = long double;
