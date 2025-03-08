@@ -1,3 +1,4 @@
+#pragma once
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -20,11 +21,12 @@ using f128 = __float128;
 #define OVERLOAD4(a, b, c, d, e, ...) e
 #define FOR(...) OVERLOAD4(__VA_ARGS__, FOR4, FOR3, FOR2, FOR1)(__VA_ARGS__)
 
+#define REV1(n)          for(int _ = (n) - 1; _ >=  0 ; _--)
 #define REV2(i, n)       for(int i = (n) - 1; i >=  0 ; i--)
 #define REV3(i, s, t)    for(int i = (t) - 1, s_ = (s); i >= s_; i--)
 #define REV4(i, s, t, d) for(int i = (t) - 1, s_ = (s), d_ = (d); i >= s_; i -= d_)
 #define OVERLOAD3(a, b, c, d, ...) d
-#define REV(...) OVERLOAD3(__VA_ARGS__, REV4, REV3, REV2) (__VA_ARGS__)
+#define REV(...) OVERLOAD4(__VA_ARGS__, REV4, REV3, REV2, REV1)(__VA_ARGS__)
 
 #define FOR_SUBSET(T, S) for(int S_ = (S), T = S_; T >= 0; T = (T == 0 ? -1 : (T - 1) & S_))
 
@@ -37,14 +39,14 @@ template < class T, class U > bool chmax(T& a, const U& b) { return a < b ? a = 
 i64 floor_div(const i64 n, const i64 d) { assert(d != 0); return n / d - ((n ^ d) <  0 && n % d != 0); }
 i64  ceil_div(const i64 n, const i64 d) { assert(d != 0); return n / d + ((n ^ d) >= 0 && n % d != 0); }
 
-template < class T, class F > T binary_search(T ok, T ng, F check) {
+template < class T, class F > T bin_search(T ok, T ng, F check) {
     while(abs(ok - ng) > 1) {
         T mid = (ok + ng) / 2;
         (check(mid) ? ok : ng) = mid;
     }
     return ok;
 }
-template < class T, class F > T binary_search_real(T ok, T ng, F check, int step = 100) {
+template < class T, class F > T bin_search_real(T ok, T ng, F check, int step = 100) {
     FOR(step) {
         T mid = (ok + ng) / 2;
         (check(mid) ? ok : ng) = mid;
@@ -77,6 +79,9 @@ namespace scan {
     };
     struct cppio { cppio() { cin.tie(0); ios::sync_with_stdio(0); } } cppio_instance;
 }
+scan::x0 in() { return scan::x0(); }
+scan::x1 in(int n) { return scan::x1(n); }
+scan::x2 in(int h, int w) { return scan::x2(h, w); }
 
 template < class T > ostream& operator << (ostream& os, const vector< T > a) {
     const int n = a.size();
@@ -96,3 +101,10 @@ namespace printer {
     void precision(int n) { cout << fixed << setprecision(n); }
     void flush() { cout.flush(); }
 }
+
+constexpr pair<int, int> dir4[] = {{-1, 0}, {0, -1}, {+1, 0}, {0, +1}};
+
+vector<int>& operator ++ (vector<int>& a) { for(auto& e : a) e++; return a; }
+vector<int>& operator -- (vector<int>& a) { for(auto& e : a) e--; return a; }
+vector<int>  operator ++ (vector<int>& a, int) { vector<int> b = a; ++a; return b; }
+vector<int>  operator -- (vector<int>& a, int) { vector<int> b = a; --a; return b; }
