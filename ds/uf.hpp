@@ -2,11 +2,12 @@
 
 struct union_find {
     vector<int> data;
+    static constexpr int SKIP = -1;
     union_find(int n) : data(n, -1) {}
 
     int unite(int x, int y) {
         x = root(x), y = root(y);
-        if(x == y) return -1;
+        if(x == y) return SKIP;
         if(size(x) < size(y)) swap(x, y);
         data[x] += data[y];
         return data[y] = x;
@@ -16,9 +17,9 @@ struct union_find {
     bool same(int x, int y) { return root(x) == root(y); }
 };
 
-template < class F > struct uf_sum : public union_find {
+struct uf_sum : public union_find {
     uf_sum(int n) : union_find::union_find(n) {}
-    int unite(int x, int y, F merge) {
+    template < class F > int unite(int x, int y, F merge) {
         x = root(x), y = root(y);
         if(x == y) return -1;
         if(size(x) < size(y)) swap(x, y);
