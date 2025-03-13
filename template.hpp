@@ -30,6 +30,8 @@ using f128 = __float128;
 
 #define FOR_SUBSET(T, S) for(int S_ = (S), T = S_; T >= 0; T = (T == 0 ? -1 : (T - 1) & S_))
 
+#define MULTI for(int testcase_ = in(), testcase = 0; testcase < testcase_; testcase++)
+
 template < class T > using heap_max = priority_queue< T, vector< T >, less< T > >;
 template < class T > using heap_min = priority_queue< T, vector< T >, greater< T >>;
 
@@ -39,26 +41,18 @@ template < class T, class U > bool chmax(T& a, const U& b) { return a < b ? a = 
 i64 floor_div(const i64 n, const i64 d) { assert(d != 0); return n / d - ((n ^ d) <  0 && n % d != 0); }
 i64  ceil_div(const i64 n, const i64 d) { assert(d != 0); return n / d + ((n ^ d) >= 0 && n % d != 0); }
 
-template < class T, class F > T bin_search(T ok, T ng, F check) {
-    while(abs(ok - ng) > 1) {
-        T mid = (ok + ng) / 2;
-        (check(mid) ? ok : ng) = mid;
-    }
-    return ok;
-}
-template < class T, class F > T bin_search_real(T ok, T ng, F check, int step = 100) {
-    FOR(step) {
-        T mid = (ok + ng) / 2;
-        (check(mid) ? ok : ng) = mid;
-    }
-    return ok;
-}
+template < class T, class F > T bin_search(T ok, T ng, F check) { while(abs(ok - ng) > 1) { T mid = (ok + ng) / 2; (check(mid) ? ok : ng) = mid; } return ok; }
+template < class T, class F > T bin_search_real(T ok, T ng, F check, int step = 100) { FOR(step) { T mid = (ok + ng) / 2; (check(mid) ? ok : ng) = mid; } return ok; }
 
 template < class T, class U > T accum(const vector< U >& a) { return accumulate(a.begin(), a.end(), T(0)); }
 template < class T > pair< T, int > min(const vector< T >& a) { auto itr = min_element(a.begin(), a.end()); return {*itr, itr - a.begin()}; }
 template < class T > pair< T, int > max(const vector< T >& a) { auto itr = max_element(a.begin(), a.end()); return {*itr, itr - a.begin()}; }
 template < class T > void sort(vector< T >& a) { sort(a.begin(), a.end()); }
 template < class T > void rsort(vector< T >& a) { sort(a.rbegin(), a.rend()); }
+template < class T > void reverse(vector< T >& a) { reverse(a.begin(), a.end()); }
+void sort(string& s) { sort(s.begin(), s.end()); }
+void rsort(string& s) { sort(s.rbegin(), s.rend()); }
+void reverse(string& s) { reverse(s.begin(), s.end()); }
 template < class T, class Cmp > void sort(vector< T >& a, Cmp cmp) { sort(a.begin(), a.end(), cmp); }
 template < class T > int LB(vector< T >& a, T x) { return distance(a.begin(), lower_bound(a.begin(), a.end(), x)); }
 template < class T > int UB(vector< T >& a, T x) { return distance(a.begin(), upper_bound(a.begin(), a.end(), x)); }
@@ -66,18 +60,10 @@ template < class T > void unique(vector< T >& a) { sort(a.begin(), a.end()); a.e
 vector<int> iota(int n) { vector<int> a(n); iota(a.begin(), a.end(), 0); return a; }
 
 namespace scan {
-    struct x0 {
-        template < class T > operator T() { T x; cin >> x; return x; }
-    };
-    struct x1 {
-        int n; x1(int n) : n(n) {}
-        template < class T > operator vector< T >() { vector< T > a(n); for(T& x : a) cin >> x; return a; }
-    };
-    struct x2 {
-        int h, w; x2(int h, int w) : h(h), w(w) {}
-        template < class T > operator vector< vector< T > >() { vector m(h, vector< T >(w)); for(vector< T >& a : m) for(T& x : a) cin >> x; return m; }
-    };
-    struct cppio { cppio() { cin.tie(0); ios::sync_with_stdio(0); } } cppio_instance;
+struct x0 { template < class T > operator T() { T x; cin >> x; return x; } };
+struct x1 { int n; x1(int n) : n(n) {} template < class T > operator vector< T >() { vector< T > a(n); for(T& x : a) cin >> x; return a; } };
+struct x2 { int h, w; x2(int h, int w) : h(h), w(w) {} template < class T > operator vector< vector< T > >() { vector m(h, vector< T >(w)); for(vector< T >& a : m) for(T& x : a) cin >> x; return m; } };
+struct cppio { cppio() { cin.tie(0); ios::sync_with_stdio(0); } } cppio_instance;
 }
 scan::x0 in() { return scan::x0(); }
 scan::x1 in(int n) { return scan::x1(n); }
@@ -88,17 +74,11 @@ template < class T > ostream& operator << (ostream& os, const vector< T > a) {
     FOR(i, n) { os << a[i]; if(i + 1 != n) os << ' '; }
     return os;
 }
-template < class T > int print_n(const vector< T > a) {
-    for(T x : a) cout << x << '\n';
-    return 0;
-}
+template < class T > int print_n(const vector< T > a) { for(T x : a) cout << x << '\n'; return 0; }
 int print() { cout << '\n'; return 0; }
-template < class Head, class... Tail > int print(Head&& h, Tail&&... t) {
-    cout << h; if(sizeof...(Tail)) cout << ' ';
-    return print(forward<Tail>(t)...);
-}
+template < class Head, class... Tail > int print(Head&& h, Tail&&... t) { cout << h; if(sizeof...(Tail)) cout << ' '; return print(forward<Tail>(t)...); }
 namespace printer {
-    void precision(int n) { cout << fixed << setprecision(n); }
+    void prec(int n) { cout << fixed << setprecision(n); }
     void flush() { cout.flush(); }
 }
 
@@ -108,3 +88,10 @@ vector<int>& operator ++ (vector<int>& a) { for(auto& e : a) e++; return a; }
 vector<int>& operator -- (vector<int>& a) { for(auto& e : a) e--; return a; }
 vector<int>  operator ++ (vector<int>& a, int) { vector<int> b = a; ++a; return b; }
 vector<int>  operator -- (vector<int>& a, int) { vector<int> b = a; --a; return b; }
+
+template < class T > vector<pair< T, int>> RLE(const vector< T >& a) { vector<pair< T, int>> v; for(const T& x : a) { if(not v.empty() and v.back().first == x) v.back().second++; else v.emplace_back(x, 1); } return v; }
+vector<pair<char, int>> RLE(const string& s) { vector<pair<char, int>> v; for(const char& c : s) { if(not v.empty() and v.back().first == c) v.back().second++; else v.emplace_back(c, 1); } return v; }
+template < class String, class Same > vector<String> RLE(const String& a, const Same same) { vector<String> v; for(const auto& x : a) { if(not v.empty() and same(v.back().back(), x)) v.back().push_back(x); else v.push_back({x}); } return v; }
+
+int YESNO(bool yes) { return print(yes ? "YES" : "NO"); }
+int YesNo(bool yes) { return print(yes ? "Yes" : "No"); }
