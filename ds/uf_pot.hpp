@@ -9,9 +9,9 @@ template < class Group > struct uf_pot {
     static constexpr int ERROR = -2;
     uf_pot(int n) : data(n, -1), pot(n, G::e()) {}
 
-    // p[x] + w == p[y]
+    // p[x] = p[y] * x
     int unite(int x, int y, T w) {
-        w = G::op(G::op(p(x), w), G::inv(p(y)));
+        w = G::op(G::inv(p(y)), G::op(w, p(x)));
         x = root(x), y = root(y);
         if(x == y) return d(x, y) == w ? SKIP : ERROR;
         if(size(x) < size(y)) w = G::inv(w), swap(x, y);
@@ -23,14 +23,14 @@ template < class Group > struct uf_pot {
     int size(int x) { return -data[root(x)]; }
     bool same(int x, int y) { return root(x) == root(y); }
     T p(int x) { compress(x); return pot[x]; }
-    T d(int x, int y) { return G::op(G::inv(p(x)), p(y)); }
+    T d(int x, int y) { return G::op(p(y), G::inv(p(x))); }
 
   private:
     void compress(int x) {
         if(data[x] < 0) return;
         const int p = data[x];
         compress(p);
-        pot[x] = G::op(pot[p], pot[x]);
+        pot[x] = G::op(pot[x], pot[p]);
         data[x] = data[p] < 0 ? p : data[p];
     }
 };
