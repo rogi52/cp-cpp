@@ -20,7 +20,7 @@ template < u32 mod > struct static_modint {
 // x^n
 template < u32 mod > static_modint<mod> pow(static_modint<mod> x, u64 n) {
     static_modint<mod> p(1);
-    for(; n; n >>= 1) { if(n & 1) p *= x; p *= p; }
+    for(; n; n >>= 1) { if(n & 1) p *= x; x *= x; }
     return p;
 }
 // x^{-1}
