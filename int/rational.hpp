@@ -20,7 +20,7 @@ template < class Int > struct rational {
     Q operator / (const Q& r) { return Q(sign * r.sign, upper * r.lower, lower * r.upper); }
     bool operator == (const Q& r) { return sign == r.sign and upper == r.upper and lower == r.lower; }
     bool operator != (const Q& r) { return sign != r.sign or  upper != r.upper or  lower != r.lower; }
-    bool operator <  (const Q& r) { return (sign == -1) ^ (sign == r.sign and upper * r.lower < r.upper * lower); }
+    bool operator <  (const Q& r) { return sign != r.sign ? sign == -1 : (sign == -1) ^ (upper * r.lower < r.upper * lower); }
     Q& operator += (const Q& r) { return *this = *this + r; }
     Q& operator -= (const Q& r) { return *this = *this - r; }
     Q& operator *= (const Q& r) { return *this = *this * r; }
