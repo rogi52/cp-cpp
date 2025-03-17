@@ -1,3 +1,5 @@
+#include "template.hpp"
+
 namespace alg {
 template < class T > struct sum {
     using value_type = T;
