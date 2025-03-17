@@ -27,8 +27,8 @@ template < u32 mod, u32 is_prime > static_modint<mod, is_prime> pow(static_modin
 }
 // x^{-1}
 template < u32 mod, u32 is_prime > static_modint<mod, is_prime> inv(static_modint<mod, is_prime> x) {
-    u32 a = x.v, b = mod, u = 1, v = 0;
-    while(b) { u32 t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); }
+    int a = x.v, b = mod, u = 1, v = 0;
+    while(b) { int t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); }
     return static_modint<mod, is_prime>(u);
 }
 template < u32 mod, u32 is_prime > istream& operator >> (istream& is, static_modint<mod, is_prime>& x) { i64 v; is >> v; x = static_modint<mod, is_prime>(v); return is; }
