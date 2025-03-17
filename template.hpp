@@ -59,6 +59,22 @@ template < class T > int UB(vector< T >& a, T x) { return distance(a.begin(), up
 template < class T > void unique(vector< T >& a) { sort(a.begin(), a.end()); a.erase(unique(a.begin(), a.end()), a.end()); }
 vector<int> iota(int n) { vector<int> a(n); iota(a.begin(), a.end(), 0); return a; }
 
+istream& operator >> (istream& is, i128& x) {
+    string s; is >> s;
+    int m = (s[0] == '-');
+    x = 0;
+    FOR(i, m, ssize(s)) x = x * 10 + (s[i] - '0');
+    if(m) x *= -1;
+    return is;
+}
+ostream& operator << (ostream& os, const i128& x) {
+    if(x == 0) return os << '0';
+    i128 y = x; if(y < 0) { os << '-'; y *= -1; }
+    vector<int> ny;
+    while(y) ny.push_back(y % 10), y /= 10;
+    REV(i, ssize(ny)) os << ny[i];
+    return os;
+}
 namespace scan {
 struct x0 { template < class T > operator T() { T x; cin >> x; return x; } };
 struct x1 { int n; x1(int n) : n(n) {} template < class T > operator vector< T >() { vector< T > a(n); for(T& x : a) cin >> x; return a; } };
@@ -95,3 +111,6 @@ template < class String, class Same > vector<String> RLE(const String& a, const 
 
 int YESNO(bool yes) { return print(yes ? "YES" : "NO"); }
 int YesNo(bool yes) { return print(yes ? "Yes" : "No"); }
+
+#include <boost/multiprecision/cpp_int.hpp>
+using bint = boost::multiprecision::cpp_int;
