@@ -114,3 +114,6 @@ int YesNo(bool yes) { return print(yes ? "Yes" : "No"); }
 
 #include <boost/multiprecision/cpp_int.hpp>
 using bint = boost::multiprecision::cpp_int;
+
+constexpr i32 INF32 = 1e9;
+constexpr i64 INF64 = 1e18;
