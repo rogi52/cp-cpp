@@ -49,7 +49,7 @@ template < class A > struct lazytree {
     T v(int i) {
         assert(0 <= i and i < n);
         i += sz;
-        FOR(p, 1, lg + 1) push(i >> p);
+        REV(p, 1, lg + 1) push(i >> p);
         return a[i];
     }
     T v(int l, int r) {
@@ -104,7 +104,7 @@ template < class A > struct lazytree {
         if(l == n) return n;
         l += sz;
         REV(i, 1, lg + 1) push(l >> i);
-        S s = V::e();
+        T s = V::e();
         do {
             while(l % 2 == 0) l >>= 1;
             if(not g(V::e(s, a[l]))) {
@@ -118,7 +118,7 @@ template < class A > struct lazytree {
                 }
                 return l - sz;
             }
-            s = V::op(s, d[l]);
+            s = V::op(s, a[l]);
             l++;
         } while((l & -l) != l);
         return n;

@@ -21,19 +21,19 @@ template < u32 mod_, u32 prime_, u32 root_ > struct static_modint {
     bool operator != (const mint& r) const { return v != r.v; }
 };
 // x^n
-template < u32 m, u32 p, u32 r > static_modint<m, p, r> pow(static_modint<m, p, r> x, u64 n) {
-    static_modint<m, p, r> p(1);
+template < u32 mod, u32 prime, u32 root > static_modint<mod, prime, root> pow(static_modint<mod, prime, root> x, u64 n) {
+    static_modint<mod, prime, root> p(1);
     for(; n; n >>= 1) { if(n & 1) p *= x; x *= x; }
     return p;
 }
 // x^{-1}
-template < u32 m, u32 p, u32 r > static_modint<m, p, r> inv(static_modint<m, p, r> x) {
-    int a = x.v, b = m, u = 1, v = 0;
+template < u32 mod, u32 prime, u32 root > static_modint<mod, prime, root> inv(static_modint<mod, prime, root> x) {
+    int a = x.v, b = mod, u = 1, v = 0;
     while(b) { int t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); }
-    return static_modint<m, p, r>(u);
+    return static_modint<mod, prime, root>(u);
 }
-template < u32 m, u32 p, u32 r > istream& operator >> (istream& is, static_modint<m, p, r>& x) { i64 v; is >> v; x = static_modint<m, p, r>(v); return is; }
-template < u32 m, u32 p, u32 r > ostream& operator << (ostream& os, const static_modint<m, p, r>& x) { return os << x.v; }
+template < u32 mod, u32 prime, u32 root > istream& operator >> (istream& is, static_modint<mod, prime, root>& x) { i64 v; is >> v; x = static_modint<mod, prime, root>(v); return is; }
+template < u32 mod, u32 prime, u32 root > ostream& operator << (ostream& os, const static_modint<mod, prime, root>& x) { return os << x.v; }
 
 using modint998 = static_modint<  998'244'353, 1, 3>;
 using modint107 = static_modint<1'000'000'007, 1, 5>;

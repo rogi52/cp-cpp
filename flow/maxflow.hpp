@@ -1,6 +1,7 @@
 #include "template.hpp"
 
 template < class Cap > struct mf_graph {
+    mf_graph() {}
     mf_graph(int n) : n(n), g(n) {}
     int add_edge(int from, int to, Cap cap) {
         assert(0 <= from and from < n);

@@ -8,6 +8,7 @@ template < class Cost > struct sm_min {
     vector<array<Cost, 2>> c1;
     vector<map<int, array<array<Cost, 2>, 2>>> c2;
 
+    sm_min() {}
     sm_min(int n) : n(n), s(n), t(n + 1), g(n + 2), c0(0), c1(n), c2(n) {}
     void add0(Cost cost) { c0 += cost; }
     void add1(int i, bool f, Cost cost) {
@@ -20,11 +21,11 @@ template < class Cost > struct sm_min {
         c2[i][j][f][g] += cost;
     }
     Cost ans() {
-        FOR(i, n) for(const auto &[j, c] : c2) {
+        FOR(i, n) for(auto [j, c] : c2[i]) {
             assert(c[0][0] + c[1][1] <= c[0][1] + c[1][0]);
             add0(c[0][0]);
             add1(i, 1, c[1][1] - c[0][1]);
-            add2(j, 1, c[0][1] - c[0][0]);
+            add1(j, 1, c[0][1] - c[0][0]);
             g.add_edge(i, j, c[0][1] + c[1][0] - c[0][0] - c[1][1]);
         }
         FOR(i, n) {
@@ -86,7 +87,7 @@ template < class Cost, Cost INF > struct k_sm_min {
         }
         FOR(i, n) {
             auto& c = c1[i];
-            FOR(f, 1, k[i] - 1) sm.add2(id[i][f - 1], 1, id[i][f], -, INF);
+            FOR(f, 1, k[i] - 1) sm.add2(id[i][f - 1], 1, id[i][f], 0, INF);
             FOR(f, 1, k[i]) sm.add1(id[i][f - 1], 1, c[f - 1] - c[f]);
             add0(c[k[i] - 1]);
         }
