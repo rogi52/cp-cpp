@@ -5,8 +5,8 @@ namespace rnd {
     u32 seed; mt19937 mt;
     struct gen_seed { gen_seed() { seed = random_device()(); mt = mt19937(seed); } } gen_seed_instance;
     // [L, R)
-    template < class Int > Int i(Int L, Int R) { assert(L < R); static uniform_int_distribution<Int> d(L, R - 1); return d(mt); }
-    template < class Real > Real r(Real L, Real R) { assert(L <= R); static uniform_real_distribution<Real> d(L, R); return d(mt); }
+    template < class Int > Int i(Int L, Int R) { assert(L < R); return uniform_int_distribution<Int>(L, R - 1)(mt); }
+    template < class Real > Real r(Real L, Real R) { assert(L <= R); return uniform_real_distribution<Real>(L, R)(mt); }
 }
 
 template < int n, array<u32, n> mod > struct hash_vector {

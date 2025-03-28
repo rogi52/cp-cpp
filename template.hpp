@@ -30,7 +30,7 @@ using f128 = __float128;
 
 #define FOR_SUBSET(T, S) for(int S_ = (S), T = S_; T >= 0; T = (T == 0 ? -1 : (T - 1) & S_))
 
-#define MULTI for(int testcase_ = in(), testcase = 0; testcase < testcase_; testcase++)
+#define MULTI for(int testcase_ = in(), testcase = 0; testcase < testcase_; testcase++) [&]
 
 template < class T > using heap_max = priority_queue< T, vector< T >, less< T > >;
 template < class T > using heap_min = priority_queue< T, vector< T >, greater< T >>;
