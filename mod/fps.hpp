@@ -70,11 +70,41 @@ template < class mint > vector<mint> pow(const vector<mint>& f, u64 e, int n) {
     g.resize(n);
     return g;
 }
-template < class mint > vector<mint> sqrt(const vector<mint>& f, int n) {
-    const int s = ssize(f), d = n;
-    REV(i, n) if(f[i] != mint(0)) d = i;
-    if(d == n) return f;
-    if(d % 2 == 1) { assert(0); }
-    // TODO
+// template < class mint > vector<mint> sqrt(const vector<mint>& f, int n) {
+//     const int s = ssize(f), d = n;
+//     REV(i, n) if(f[i] != mint(0)) d = i;
+//     if(d == n) return f;
+//     if(d % 2 == 1) { assert(0); }
+//     // TODO
+// }
+
+// f <- f * g
+// g: sparse
+template < class mint > void prod_sparse(vector<mint>& f, vector<pair<int, mint>> g) {
+    const int n = ssize(f);
+    REV(k, n) {
+        mint v = 0;
+        for(auto [j, gj] : g) {
+            const int i = k - j;
+            if(0 <= i and i < n) v += f[i] * gj;
+        }
+        f[k] = v;
+    }
+}
+template < class mint > void div_sparse(vector<mint>& f, vector<pair<int, mint>> g) {
+    assert(g[0].first  == 0);
+    assert(g[0].second != 0);
+    const mint c = inv(g[0].second);
+    const int n = ssize(f);
+    FOR(i, n) f[i] *= c;
+    FOR(i, n) for(auto [j, gj] : g) if(j != 0) {
+        const int k = i + j;
+        if(k < n) f[k] -= f[i] * gj * c;
+    }
+}
+template < class mint > vector<mint> inv_sparse(vector<pair<int, mint>> f, int n) {
+    vector<mint> i(n, 0); i[0] = 1;
+    div_sparse(i, f);
+    return i;
 }
 }

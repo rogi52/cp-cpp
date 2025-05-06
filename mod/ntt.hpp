@@ -3,7 +3,7 @@
 
 namespace ntt {
 
-template < class mint > void ntt(vector<mint>& a, bool inv) {
+template < class mint > void ntt(vector<mint>& a, bool is_inv) {
     const int n = ssize(a);
     if(n == 0) return;
     static u32 mod = mint::mod, root = mint::root;
@@ -19,7 +19,7 @@ template < class mint > void ntt(vector<mint>& a, bool inv) {
         if(i > j) swap(a[i], a[j]);
     }
     for(int k = 0, t = 2; t <= n; k++, t <<= 1) {
-        mint b = not inv ? bw[k] : ibw[k];
+        mint b = not is_inv ? bw[k] : ibw[k];
         for(int i = 0; i < n; i += t) {
             mint w = 1;
             for(int j = 0; j < t / 2; j++) {
@@ -31,7 +31,7 @@ template < class mint > void ntt(vector<mint>& a, bool inv) {
             }
         }
     }
-    if(inv) {
+    if(is_inv) {
         mint x = inv(mint(n));
         FOR(i, n) a[i] *= x;
     }

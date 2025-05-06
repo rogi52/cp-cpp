@@ -1,3 +1,4 @@
+#pragma once
 #include "template.hpp"
 
 template < u32 mod_, u32 prime_, u32 root_ > struct static_modint {
@@ -9,6 +10,7 @@ template < u32 mod_, u32 prime_, u32 root_ > struct static_modint {
     constexpr mint& s(u32 v) { this->v = v < mod ? v : v - mod; return *this; }
     constexpr static_modint(i64 v = 0) { s(v % mod + mod); }
     mint operator - () const { return mint() - *this; }
+    mint operator + () const { return *this; }
     mint& operator += (const mint& r) { return s(v + r.v); }
     mint& operator -= (const mint& r) { return s(v + mod - r.v); }
     mint& operator *= (const mint& r) { v = u64(v) * r.v % mod; return *this; }

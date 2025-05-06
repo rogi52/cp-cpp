@@ -25,6 +25,7 @@ template < int n, array<u32, n> mod > struct hash_vector {
     hvec operator / (const hvec& r) const { return hvec(*this) /= r; }
     bool operator == (const hvec& r) const { return a == r.a; }
     bool operator != (const hvec& r) const { return a != r.a; }
+    bool operator < (const hvec& r) const { return a < r.a; }
 };
 template < int n, array<u32, n> mod > hash_vector<n, mod> pow(hash_vector<n, mod> x, u64 m) {
     hash_vector<n, mod> p(1);
