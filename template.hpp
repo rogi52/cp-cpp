@@ -85,12 +85,12 @@ scan::x0 in() { return scan::x0(); }
 scan::x1 in(int n) { return scan::x1(n); }
 scan::x2 in(int h, int w) { return scan::x2(h, w); }
 
-template < class T > ostream& operator << (ostream& os, const vector< T > a) {
+template < class T > ostream& operator << (ostream& os, const vector< T >& a) {
     const int n = a.size();
     FOR(i, n) { os << a[i]; if(i + 1 != n) os << ' '; }
     return os;
 }
-template < class T > int print_n(const vector< T > a) { for(T x : a) cout << x << '\n'; return 0; }
+template < class T > int print_n(const vector< T >& a) { for(const T& x : a) cout << x << '\n'; return 0; }
 int print() { cout << '\n'; return 0; }
 template < class Head, class... Tail > int print(Head&& h, Tail&&... t) { cout << h; if(sizeof...(Tail)) cout << ' '; return print(forward<Tail>(t)...); }
 namespace printer {
