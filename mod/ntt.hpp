@@ -58,7 +58,7 @@ template < class mint > vector<mint> conv(vector<mint> a, vector<mint> b) {
     const u32 mod = mint::mod;
     const int sz = [&] {
         int n2 = 1; while(n2 < n) n2 <<= 1;
-        int m2 = 1; while(m2 < n) m2 <<= 1;
+        int m2 = 1; while(m2 < m) m2 <<= 1;
         return max(n2, m2) << 1;
     }();
 
