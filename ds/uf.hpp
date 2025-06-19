@@ -1,13 +1,16 @@
 #include "template.hpp"
 
 struct union_find {
+    int num_c; // 連結成分の個数
     vector<int> data;
     static constexpr int SKIP = -1;
-    union_find(int n) : data(n, -1) {}
+    union_find() {}
+    union_find(int n) : num_c(n), data(n, -1) {}
 
     int unite(int x, int y) {
         x = root(x), y = root(y);
         if(x == y) return SKIP;
+        num_c--;
         if(size(x) < size(y)) swap(x, y);
         data[x] += data[y];
         return data[y] = x;
