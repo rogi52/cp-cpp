@@ -4,7 +4,6 @@
 #include "alg/minmax.hpp"
 
 // Library Checker: https://judge.yosupo.jp/problem/area_of_union_of_rectangles
-// https://judge.yosupo.jp/submission/313742
 namespace area_of_union_of_rectangles {
 template < class T > struct min_count {
     struct S { int min; T cnt; };
@@ -26,27 +25,26 @@ template < class T > struct range_add_range_min_count {
     }
 };
 
-// (Lx, Ly, Rx, Ry)
-// 0 <= x, y
-template < class T, class Ans > Ans solve(const vector<tuple<T, T, T, T>>& rect) {
-    const int N = ssize(rect);
+template < class T > struct rect { T lx, rx, ly, ry; };
+template < class T, class Ans > Ans solve(const vector<rect<T>>& a) {
+    const int N = ssize(a);
     vector<pair<T, int>> Y(N + N);
-    FOR(i, N) Y[i    ] = {get<1>(rect[i]), i    };
-    FOR(i, N) Y[i + N] = {get<3>(rect[i]), i + N};
-    ranges::sort(Y, {}, &pair<T, int>::first);
-    vector<int> Ly_idx(N), Ry_idx(N);
+    FOR(i, N) Y[i    ] = {a[i].ly, i    };
+    FOR(i, N) Y[i + N] = {a[i].ry, i + N};
+    ranges::sort(Y, {}, &pair<T, int>::first); 
+    vector<int> ly_idx(N), ry_idx(N);
     FOR(i, N + N) {
         const auto &[_, j] = Y[i];
-        (j < N ? Ly_idx[j] : Ry_idx[j - N]) = i;
+        (j < N ? ly_idx[j] : ry_idx[j - N]) = i;
     }
 
     struct query { T x; int l, r, c; };
     vector<query> Q(N + N);
     FOR(i, N) {
-        const int l = Ly_idx[i];
-        const int r = Ry_idx[i];
-        Q[i    ] = {get<0>(rect[i]), l, r, +1};
-        Q[i + N] = {get<2>(rect[i]), l, r, -1};
+        const int l = ly_idx[i];
+        const int r = ry_idx[i];
+        Q[i    ] = {a[i].lx, l, r, +1};
+        Q[i + N] = {a[i].rx, l, r, -1};
     }
     ranges::sort(Q, {}, &query::x);
 
