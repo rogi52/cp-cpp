@@ -1,3 +1,4 @@
+#pragma once
 #include "mod/binom.hpp"
 
 // sum_{k=0 to m} binom{n}{k}
