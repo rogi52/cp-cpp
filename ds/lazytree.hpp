@@ -107,7 +107,7 @@ template < class A > struct lazytree {
         T s = V::e();
         do {
             while(l % 2 == 0) l >>= 1;
-            if(not g(V::e(s, a[l]))) {
+            if(not g(V::op(s, a[l]))) {
                 while(l < sz) {
                     push(l);
                     l = 2 * l;

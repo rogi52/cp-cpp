@@ -1,4 +1,5 @@
 #include "template.hpp"
+#include <compare>
 
 template < class Int > struct rational {
     using Q = rational;
@@ -6,8 +7,8 @@ template < class Int > struct rational {
     rational() : sign(+1), upper(0), lower(1) {}
     rational(Int sign, Int upper, Int lower) : sign(sign), upper(upper), lower(lower) { reduce(); }
     rational(Int upper, Int lower) {
-        if(upper == 0 and lower == 0) cerr << "0/0" << endl, exit(1);
-        else if(upper == 0) sign = s(lower), this->upper = 0, this->lower = 1;
+        if(upper == 0 and lower == 0) cerr << "Error: 0/0" << endl, exit(1);
+        else if(upper == 0) sign = +1, this->upper = 0, this->lower = 1;
         else if(lower == 0) sign = s(upper), this->upper = 1, this->lower = 0;
         else sign = s(upper) * s(lower), this->upper = s(upper) * upper, this->lower = s(lower) * lower, reduce();
     }
@@ -18,9 +19,13 @@ template < class Int > struct rational {
     Q operator - (const Q& r) { return Q((sign * upper) * r.lower - lower * (r.sign * r.upper), lower * r.lower); }
     Q operator * (const Q& r) { return Q(sign * r.sign, upper * r.upper, lower * r.lower); }
     Q operator / (const Q& r) { return Q(sign * r.sign, upper * r.lower, lower * r.upper); }
-    bool operator == (const Q& r) { return sign == r.sign and upper == r.upper and lower == r.lower; }
-    bool operator != (const Q& r) { return sign != r.sign or  upper != r.upper or  lower != r.lower; }
-    bool operator <  (const Q& r) { return sign != r.sign ? sign == -1 : (sign == -1) ^ (upper * r.lower < r.upper * lower); }
+    auto operator <=> (const Q& r) const {
+      if(sign == r.sign and upper == r.upper and lower == r.lower) return std::strong_ordering::equal;
+      if(  upper == 0) return (r.sign == +1) ? std::strong_ordering::less : std::strong_ordering::greater;
+      if(r.upper == 0) return (  sign == -1) ? std::strong_ordering::less : std::strong_ordering::greater;
+      return (sign != r.sign ? sign == -1 : (sign == -1) ^ (upper * r.lower < r.upper * lower)) ? std::strong_ordering::less : std::strong_ordering::greater;
+    }
+    bool operator == (const Q& r) const { return sign == r.sign and upper == r.upper and lower == r.lower; }
     Q& operator += (const Q& r) { return *this = *this + r; }
     Q& operator -= (const Q& r) { return *this = *this - r; }
     Q& operator *= (const Q& r) { return *this = *this * r; }
