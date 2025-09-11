@@ -75,7 +75,7 @@ template < class mint > vector<mint> conv(vector<mint> a, vector<mint> b) {
     vector<mint1> a1(sz), b1(sz), c1(sz);
     vector<mint2> a2(sz), b2(sz), c2(sz);
     FOR(i, n) a0[i].v = a1[i].v = a2[i].v = a[i].v;
-    FOR(i, n) b0[i].v = b1[i].v = b2[i].v = b[i].v;
+    FOR(i, m) b0[i].v = b1[i].v = b2[i].v = b[i].v;
     ntt(a0, false); ntt(a1, false); ntt(a2, false);
     ntt(b0, false); ntt(b1, false); ntt(b2, false);
     FOR(i, sz) c0[i] = a0[i] * b0[i];

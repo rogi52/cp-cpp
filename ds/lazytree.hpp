@@ -73,7 +73,7 @@ template < class A > struct lazytree {
         assert(0 <= i and i < n);
         i += sz;
         REV(p, 1, lg + 1) push(i >> p);
-        a[i] = O::op(a[i], f);
+        a[i] = A::op(a[i], f);
         FOR(p, 1, lg + 1) update(i >> p);
     }
     void o(int l, int r, F f) {
