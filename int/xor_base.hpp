@@ -9,6 +9,17 @@ template < class Int > vector<Int> xor_base_of_array(const vector<Int>& A) {
     return B;
 }
 
+template < class Int > vector<Int> xor_base_of_array_tight(const vector<Int>& A) {
+    vector<Int> B;
+    for(Int a : A) {
+        for(const Int b : B) chmin(a, a ^ b);
+        for(Int& b : B) chmin(b, b ^ a);
+        if(a != 0) B.push_back(a);
+    }
+    sort(B);
+    return B;
+}
+
 template < class Int > struct xor_base {
     vector<Int> B;
     xor_base() {}
