@@ -114,3 +114,31 @@ int YesNo(bool yes) { return print(yes ? "Yes" : "No"); }
 
 constexpr i32 INF32 = 1e9;
 constexpr i64 INF64 = 1e18;
+template < class T > constexpr T infty = 0;
+template <> constexpr int infty<int> = 1e9;
+template <> constexpr int infty<u32> = 1e9;
+template <> constexpr i64 infty<i64> = 1e18;
+template <> constexpr u64 infty<u64> = 1e18;
+
+namespace bit {
+int pop(int x) { return popcount<u32>(x); }
+int pop(u32 x) { return popcount<u32>(x); }
+int pop(i64 x) { return popcount<u64>(x); }
+int pop(u64 x) { return popcount<u64>(x); }
+int parity(int x) { return __builtin_parity(x); }
+int parity(u32 x) { return __builtin_parity(x); }
+int parity(i64 x) { return __builtin_parityll(x); }
+int parity(u64 x) { return __builtin_parityll(x); }
+int sgn(int x) { return parity(x) ? -1 : +1; }
+int sgn(u32 x) { return parity(x) ? -1 : +1; }
+int sgn(i64 x) { return parity(x) ? -1 : +1; }
+int sgn(u64 x) { return parity(x) ? -1 : +1; }
+int top(int x) { return x == 0 ? -1 : 31 - __builtin_clz(x); }
+int top(u32 x) { return x == 0 ? -1 : 31 - __builtin_clz(x); }
+int top(i64 x) { return x == 0 ? -1 : 63 - __builtin_clzll(x); }
+int top(u64 x) { return x == 0 ? -1 : 63 - __builtin_clzll(x); }
+int low(int x) { return x == 0 ? -1 : __builtin_ctz(x); }
+int low(u32 x) { return x == 0 ? -1 : __builtin_ctz(x); }
+int low(i64 x) { return x == 0 ? -1 : __builtin_ctzll(x); }
+int low(u64 x) { return x == 0 ? -1 : __builtin_ctzll(x); }
+}
