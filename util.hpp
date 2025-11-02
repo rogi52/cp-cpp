@@ -1,4 +1,5 @@
 #include "template.hpp"
+#include "rnd.hpp"
 
 namespace util {
 
@@ -31,4 +32,12 @@ bool is_perm1(const int N, const vector<int> P) {
     }
     return true;
 }
+
+// ランダムな数列 a in [L, R)^n
+template < class T > vector< T > random_vector(int n, T L, T R) {
+    vector< T > ans(n);
+    FOR(i, n) ans[i] = rnd::i< T >(L, R);
+    return ans;
+}
+
 }

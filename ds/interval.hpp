@@ -121,7 +121,7 @@ auto Q3 = [&]{
 オフラインの実装: https://codeforces.com/contest/1638/submission/347045852
 */
 
-template < class Value > struct DIU_offline {
+template < class Value > struct DIU_o {
     const int MIN, MAX;
     Value NONE;
     // 区間の個数
@@ -131,7 +131,7 @@ template < class Value > struct DIU_offline {
     vector<Value> dat;
     set64 st;
 
-    DIU_offline(int N, Value NONE) : MIN(0), MAX(N), NONE(NONE), size(0), len(0), dat(N, NONE), st(N) {
+    DIU_o(int N, Value NONE) : MIN(0), MAX(N), NONE(NONE), size(0), len(0), dat(N, NONE), st(N) {
         st.insert(0);
     }
 
