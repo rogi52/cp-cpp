@@ -141,4 +141,5 @@ int low(int x) { return x == 0 ? -1 : __builtin_ctz(x); }
 int low(u32 x) { return x == 0 ? -1 : __builtin_ctz(x); }
 int low(i64 x) { return x == 0 ? -1 : __builtin_ctzll(x); }
 int low(u64 x) { return x == 0 ? -1 : __builtin_ctzll(x); }
+int ceil(int x) { return bit_ceil<u32>(x); }
 }

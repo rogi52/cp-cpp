@@ -1,6 +1,7 @@
 #pragma once
 #include "template.hpp"
 
+namespace comb {
 template < class mint > mint fact(int n) {
     static const u32 mod = mint::mod;
     assert(0 <= n); assert(n < mod); assert(mint::prime);
@@ -24,6 +25,7 @@ template < class mint > mint fact_inv(int n) {
 }
 template < class mint > mint comb(int n, int k) {
     return 0 <= k and k <= n ? fact<mint>(n) * fact_inv<mint>(k) * fact_inv<mint>(n - k) : 0;
+}
 }
 
 template < class T > struct powers {

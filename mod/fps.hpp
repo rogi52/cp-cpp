@@ -2,14 +2,14 @@
 #include "mod/ntt.hpp"
 
 namespace fps {
-template < class mint > vector<mint> prod(vector<mint> f, vector<mint> g) {
+template < class mint > vector<mint> prod(const vector<mint>& f, const vector<mint>& g) {
     return ntt::conv(f, g);
 }
 template < class mint > vector<mint> square(vector<mint> f) {
     return ntt::square(f);
 }
 template < class mint > vector<mint> prefix(const vector<mint>& f, int n) {
-    return vector<mint>(f.begin(), f.begin() + min(ssize(f), n));
+    return vector<mint>(f.begin(), f.begin() + min<int>(ssize(f), n));
 }
 template < class mint > void up(vector<mint>& f, int n) {
     if(ssize(f) < n) f.resize(n);
@@ -35,7 +35,7 @@ template < class mint > vector<mint> log(const vector<mint>& f, int n) {
     g.resize(n);
     return g;
 }
-template < class mint > vector<mint> exp(const vector<mint>& f, int n) {
+template < class mint > vector<mint> exp(vector<mint> f, int n) {
     assert(f[0] == mint(0));
     vector<mint> g = {1};
     for(int k = 1; k < n; k <<= 1) {
