@@ -6,8 +6,10 @@ template < class Int > struct point_int {
     point_int(Int x, Int y) : x(x), y(y) {}
     point_int& operator+=(const point_int& p) { x += p.x, y += p.y; return *this; }
     point_int& operator-=(const point_int& p) { x -= p.x, y -= p.y; return *this; }
+    point_int& operator*=(const Int& r) { x *= r, y *= r; return *this; }
     point_int operator+(const point_int& p) const { return point_int(*this) += p; }
     point_int operator-(const point_int& p) const { return point_int(*this) -= p; }
+    point_int operator*(const Int& r) const { return point_int(*this) *= r; }
     point_int operator-() const { return point_int(-x, -y); }
     bool operator==(const point_int& p) const { return x == p.x and y == p.y; }
     bool operator!=(const point_int& p) const { return x != p.x or  y != p.y; }

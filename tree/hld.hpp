@@ -81,6 +81,14 @@ struct treeHLD {
         assert(decomped);
         return L[v];
     }
+    int depth(int v) {
+        assert(decomped);
+        return D[v];
+    }
+    int subtree_size(int v) {
+        assert(decomped);
+        return S[v];
+    }
 
   private:
     int id, decomped;

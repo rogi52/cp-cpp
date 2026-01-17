@@ -2,6 +2,35 @@
 #include "tree/hld.hpp"
 
 /*
+例: PAST20-L
+struct S {
+    int len, cnt;
+};
+auto id = [&]() {
+    return S{-1, 0};
+};
+auto f_ee = [&](S a, S b) -> S {
+    if(a.len > b.len) {
+        return a;
+    } else if(a.len < b.len) {
+        return b;
+    } else {
+        return S{a.len, a.cnt + b.cnt};
+    }
+};
+auto f_ev = [&](S x, int e_id) -> S {
+    return x;
+};
+auto f_vp = [&](S x, int v_id) -> S {
+    if(x.len < 0) return S{0, 1};
+    return S{x.len + 1, x.cnt};
+};
+rerooting<S, decltype(f_ee), decltype(f_ev), decltype(f_vp), decltype(id)> rr(T, f_ee, f_ev, f_vp, id);
+rr.solve(0);
+rr.reroot();
+*/
+
+/*
 edge_type: {to, e_id}
 */
 template < class T, class EE, class EV, class VP, class ID > struct rerooting {

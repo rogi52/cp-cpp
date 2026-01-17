@@ -1,3 +1,4 @@
+#pragma once
 #include "template.hpp"
 #include "mod/modint.hpp"
 
@@ -132,4 +133,16 @@ template < class mint > vector<mint> square(vector<mint> a) {
     }
     return c;
 }
+
+}
+
+template < class mint >
+vector<mint> prod_all(const vector<vector<mint>>& fs) {
+    if(ssize(fs) == 0) return {mint(1)};
+    auto rec = [&](auto&& rec, int l, int r) -> vector<mint> {
+        if(l + 1 == r) return fs[l];
+        const int m = (l + r) / 2;
+        return move(ntt::conv(move(rec(rec, l, m)), move(rec(rec, m, r))));
+    };
+    return rec(rec, 0, ssize(fs));
 }

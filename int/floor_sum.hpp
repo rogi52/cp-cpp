@@ -1,5 +1,6 @@
 #include "template.hpp"
 
+// sum_{i=0}^{N-1} floor_div(Ai+B, M)
 // https://qiita.com/sounansya/items/51b39e0d7bf5cc194081
 template < class T > T floor_sum(T n, T m, T a, T b) {
     T ans = 0;

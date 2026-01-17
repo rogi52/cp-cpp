@@ -1,9 +1,19 @@
 #include "template.hpp"
 
-template < class T > vector< T > bellman_ford(int n, const vector<tuple<int, int, T>>& es, int s) {
+// edge = {{from, to}, cost}
+// return {負閉路がある?, dist}
+template < class T > 
+pair<bool, vector< T >> bellman_ford(int n, const vector<pair<pair<int, int>, i64>>& es, int s) {
     const T INF = numeric_limits< T >::max();
-    vector< T > d(n, INF); d[s] = 0;
-    FOR(n - 1) for(auto [u, v, c] : es) if(d[u] != INF) chmin(d[v], d[u] + c);
-    for(auto [u, v, c] : es) if(d[u] != INF and d[v] > d[u] + c) return {};
-    return d;
+    vector< T > dist(n, INF); dist[s] = 0;
+    int cnt = 0;
+    while(cnt < n) {
+        bool upd = false;
+        for(const auto [u, v, c] : es) {
+            if(dist[u] != INF and chmin(dist[v], dist[u] + c)) upd = true;
+        }
+        if(not upd) break;
+        cnt += 1;
+    }
+    return {cnt == n ? dist};
 }

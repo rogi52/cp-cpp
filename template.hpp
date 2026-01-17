@@ -111,6 +111,8 @@ template < class String, class Same > vector<String> RLE(const String& a, const 
 
 int YESNO(bool yes) { return print(yes ? "YES" : "NO"); }
 int YesNo(bool yes) { return print(yes ? "Yes" : "No"); }
+int Yes() { return print("Yes"); }
+int No() { return print("No"); }
 
 constexpr i32 INF32 = 1e9;
 constexpr i64 INF64 = 1e18;
@@ -143,3 +145,6 @@ int low(i64 x) { return x == 0 ? -1 : __builtin_ctzll(x); }
 int low(u64 x) { return x == 0 ? -1 : __builtin_ctzll(x); }
 int ceil(int x) { return bit_ceil<u32>(x); }
 }
+
+// (-1)^n
+int parity_sign(int n) { return n % 2 == 0 ? +1 : -1; }

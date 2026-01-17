@@ -26,6 +26,10 @@ template < class mint > mint fact_inv(int n) {
 template < class mint > mint comb(int n, int k) {
     return 0 <= k and k <= n ? fact<mint>(n) * fact_inv<mint>(k) * fact_inv<mint>(n - k) : 0;
 }
+template < class mint > mint catalan(int n) {
+    assert(0 <= n);
+    return comb<mint>(n + n, n) * inv<mint>(n + 1);
+}
 }
 
 template < class T > struct powers {
