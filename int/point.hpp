@@ -1,6 +1,6 @@
 #include "template.hpp"
 
-template < class Int > struct point_int {
+template < class Int = i64 > struct point_int {
     Int x, y;
     point_int() : x(0), y(0) {}
     point_int(Int x, Int y) : x(x), y(y) {}
@@ -27,4 +27,17 @@ template < class Int > istream& operator>>(istream& is, point_int<Int>& p) {
 }
 template < class Int > ostream& operator<<(ostream& os, point_int<Int>& p) {
     return os << p.x << ' ' << p.y;
+}
+
+// Sort Points by Argument
+// https://judge.yosupo.jp/problem/sort_points_by_argument
+// Int * Int が Int に収まる必要がある．
+template < class Int > bool angle_sort_cmp(const point_int<Int>& p, const point_int<Int>& q) {
+    const auto f = [&](const point_int<Int>& r) -> bool {
+        const auto &[x, y] = r;
+        return y < 0 or y == 0 and x > 0 ? 0 : (x == 0 and y == 0 ? 1 : 2);
+    };
+    const int fp = f(p), fq = f(q);
+    if(fp != fq) return fp < fq;
+    return det(p, q) > 0;
 }

@@ -23,6 +23,6 @@ pair< vector<int>, vector<int> > LIS(const vector< T >& a, const Cmp& cmp) {
     }
     int m = ssize(dp);
     vector<int> idx(m);
-    for(int i = st[m - 1]; i >= 0; i = nt[i]) idx[--m] = i;
+    if(1 <= m) for(int i = st[m - 1]; i >= 0; i = nt[i]) idx[--m] = i;
     return {idx, rank};
 }

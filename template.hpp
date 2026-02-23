@@ -10,7 +10,6 @@ using u64 = unsigned long long;
 using u128 = unsigned __int128;
 using f32 = double;
 using f64 = long double;
-using f128 = __float128;
 
 #define DMP(x) cout << "[" << __LINE__ << "]" << " " << #x << ":" << " " << x << endl;
 
@@ -41,12 +40,10 @@ template < class T, class U > bool chmax(T& a, const U& b) { return a < b ? a = 
 i64 floor_div(const i64 n, const i64 d) { assert(d != 0); return n / d - ((n ^ d) <  0 && n % d != 0); }
 i64  ceil_div(const i64 n, const i64 d) { assert(d != 0); return n / d + ((n ^ d) >= 0 && n % d != 0); }
 
-template < class T, class F > T bin_search(T ok, T ng, F check) { while(abs(ok - ng) > 1) { T mid = (ok + ng) / 2; (check(mid) ? ok : ng) = mid; } return ok; }
-template < class T, class F > T bin_search_real(T ok, T ng, F check, int step = 100) { FOR(step) { T mid = (ok + ng) / 2; (check(mid) ? ok : ng) = mid; } return ok; }
+template < class T, class F > T bin_search(T ok, T ng, const F& check) { while((ok > ng ? ok - ng : ng - ok) > 1) { T mid = (ok + ng) / 2; (check(mid) ? ok : ng) = mid; } return ok; }
+template < class T, class F > T bin_search_real(T ok, T ng, const F& check, int step = 100) { FOR(step) { T mid = (ok + ng) / 2; (check(mid) ? ok : ng) = mid; } return ok; }
 
 template < class T, class U > T accum(const vector< U >& a) { return accumulate(a.begin(), a.end(), T(0)); }
-template < class T > pair< T, int > min(const vector< T >& a) { auto itr = min_element(a.begin(), a.end()); return {*itr, itr - a.begin()}; }
-template < class T > pair< T, int > max(const vector< T >& a) { auto itr = max_element(a.begin(), a.end()); return {*itr, itr - a.begin()}; }
 template < class T > void sort(vector< T >& a) { sort(a.begin(), a.end()); }
 template < class T > void rsort(vector< T >& a) { sort(a.rbegin(), a.rend()); }
 template < class T > void reverse(vector< T >& a) { reverse(a.begin(), a.end()); }
@@ -54,8 +51,8 @@ void sort(string& s) { sort(s.begin(), s.end()); }
 void rsort(string& s) { sort(s.rbegin(), s.rend()); }
 void reverse(string& s) { reverse(s.begin(), s.end()); }
 template < class T, class Cmp > void sort(vector< T >& a, Cmp cmp) { sort(a.begin(), a.end(), cmp); }
-template < class T > int LB(vector< T >& a, T x) { return distance(a.begin(), lower_bound(a.begin(), a.end(), x)); }
-template < class T > int UB(vector< T >& a, T x) { return distance(a.begin(), upper_bound(a.begin(), a.end(), x)); }
+template < class T > int LB(const vector< T >& a, T x) { return distance(a.begin(), lower_bound(a.begin(), a.end(), x)); }
+template < class T > int UB(const vector< T >& a, T x) { return distance(a.begin(), upper_bound(a.begin(), a.end(), x)); }
 template < class T > void unique(vector< T >& a) { sort(a.begin(), a.end()); a.erase(unique(a.begin(), a.end()), a.end()); }
 vector<int> iota(int n) { vector<int> a(n); iota(a.begin(), a.end(), 0); return a; }
 
@@ -97,8 +94,6 @@ namespace printer {
     void prec(int n) { cout << fixed << setprecision(n); }
     void flush() { cout.flush(); }
 }
-
-constexpr pair<int, int> dir4[] = {{-1, 0}, {0, -1}, {+1, 0}, {0, +1}};
 
 vector<int>& operator ++ (vector<int>& a) { for(auto& e : a) e++; return a; }
 vector<int>& operator -- (vector<int>& a) { for(auto& e : a) e--; return a; }
@@ -144,7 +139,147 @@ int low(u32 x) { return x == 0 ? -1 : __builtin_ctz(x); }
 int low(i64 x) { return x == 0 ? -1 : __builtin_ctzll(x); }
 int low(u64 x) { return x == 0 ? -1 : __builtin_ctzll(x); }
 int ceil(int x) { return bit_ceil<u32>(x); }
+i64 ceil(i64 x) { return bit_ceil<u64>(x); }
+int floor(int x) { return bit_floor<u32>(x); }
+i64 floor(i64 x) { return bit_floor<u64>(x); }
 }
 
 // (-1)^n
 int parity_sign(int n) { return n % 2 == 0 ? +1 : -1; }
+
+// template < class T > pair< T, int > min(const vector< T >& a) { auto itr = min_element(a.begin(), a.end()); return {*itr, itr - a.begin()}; }
+// template < class T > pair< T, int > max(const vector< T >& a) { auto itr = max_element(a.begin(), a.end()); return {*itr, itr - a.begin()}; }
+
+template < class Key, class Value >
+struct key_value {
+    Key key;
+    Value value;
+};
+template < class Value > key_value<int, Value> min(const vector<Value>& a) {
+    assert(1 <= ssize(a));
+    auto itr = min_element(a.begin(), a.end());
+    return {static_cast<int>(distance(a.begin(), itr)), *itr};
+}
+template < class Value > key_value<int, Value> max(const vector<Value>& a) {
+    assert(1 <= ssize(a));
+    auto itr = max_element(a.begin(), a.end());
+    return {static_cast<int>(distance(a.begin(), itr)), *itr};
+}
+
+struct grid {
+    int H, W;
+    grid(int H, int W) : H(H), W(W) {}
+    static constexpr pair<int, int> dir4[] = {
+                  {-1,  0}, 
+        { 0, -1},           { 0, +1}, 
+                  {+1,  0}
+    };
+    static constexpr pair<int, int> dir8[] = {
+        {-1, -1}, {-1,  0}, {-1, +1},
+        { 0, -1},           { 0, +1},
+        {+1, -1}, {+1,  0}, {+1, +1}
+    };
+    bool contains(int i, int j) const {
+        return 0 <= i and i < H and 0 <= j and j < W;
+    }
+    template < class F > 
+    void for_each_dir4(int i, int j, const F& f) const {
+        for(const auto [di, dj] : dir4) {
+            const int ni = i + di, nj = j + dj;
+            if(contains(ni, nj)) f(ni, nj);
+        }
+    }
+    template < class F >
+    void for_each_dir8(int i, int j, const F& f) const {
+        for(const auto [di, dj] : dir8) {
+            const int ni = i + di, nj = j + dj;
+            if(contains(ni, nj)) f(ni, nj);
+        }
+    }
+};
+
+template < class Sum > struct psum1D {
+    int n;
+    vector<Sum> s;
+    psum1D() : n(0), s(1, Sum()) {}
+    template < class Value >
+    psum1D(const vector<Value>& a) : n(ssize(a)), s(n + 1, Sum()) {
+        FOR(i, n) s[i + 1] = s[i] + static_cast<Sum>(a[i]);
+    }
+    // [l, r)
+    Sum v(int l, int r) const {
+        assert(0 <= l and l <= r and r <= n);
+        return s[r] - s[l];
+    }
+    void push_back(const Sum& x) {
+        s.push_back(s.back() + x);
+        n += 1;
+    }
+};
+
+template < class Value > struct psum2D {
+    int H, W;
+    vector<vector<Value>> A;
+    bool built;
+    psum2D(int H, int W) : H(H), W(W), A(H + 1, vector(W + 1, Value(0))), built(false) {}
+    // A[x][y] += v
+    void add(int x, int y, Value v) {
+        assert(not built);
+        assert(0 <= x and x < H);
+        assert(0 <= y and y < W);
+        A[x + 1][y + 1] += v;
+    }
+    void build() {
+        FOR(x, H) FOR(y, W + 1) A[x + 1][y] += A[x][y];
+        FOR(x, H + 1) FOR(y, W) A[x][y + 1] += A[x][y];
+        built = true;
+    }
+    // [xL, xR) * [yL, yR)
+    Value sum(int xL, int xR, int yL, int yR) {
+        assert(built);
+        assert(0 <= xL and xL <= xR and xR <= H);
+        assert(0 <= yL and yL <= yR and yR <= W);
+        return A[xR][yR] - A[xR][yL] - A[xL][yR] + A[xL][yL];
+    }
+    Value get(int x, int y) {
+        assert(built);
+        assert(0 <= x and x < H);
+        assert(0 <= y and y < W);
+        return sum(x, x + 1, y, y + 1);
+    }
+};
+template < class Value > struct imos2D {
+    int H, W;
+    vector<vector<Value>> A;
+    bool built;
+    imos2D(int H, int W) : H(H), W(W), A(H + 1, vector(W + 1, Value(0))), built(false) {}
+    void add(int xL, int xR, int yL, int yR, Value v) {
+        assert(not built);
+        assert(0 <= xL and xL <= xR and xR <= H);
+        assert(0 <= yL and yL <= yR and yR <= W);
+        A[xL][yL] += v;
+        A[xR][yL] -= v;
+        A[xL][yR] -= v;
+        A[xR][yR] += v;
+    }
+    void build() {
+        assert(not built);
+        FOR(i, H + 1) FOR(j, W) A[i][j + 1] += A[i][j];
+        FOR(i, H) FOR(j, W + 1) A[i + 1][j] += A[i][j];
+        built = true;
+    }
+    Value get(int x, int y) {
+        assert(built);
+        assert(0 <= x and x < H);
+        assert(0 <= y and y < W);
+        return A[x][y];
+    }
+};
+
+#include "rnd.hpp"
+
+namespace r52 {
+int abs(int x) { return x >= 0 ? x : -x; }
+i64 abs(i64 x) { return x >= 0 ? x : -x; }
+i128 abs(i128 x) { return x >= 0 ? x : -x; }
+}

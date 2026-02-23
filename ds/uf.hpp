@@ -18,13 +18,13 @@ struct union_find {
     int root(int x) { return data[x] < 0 ? x : data[x] = root(data[x]); }
     int size(int x) { return -data[root(x)]; }
     bool same(int x, int y) { return root(x) == root(y); }
-};
 
-struct uf_sum : public union_find {
-    uf_sum(int n) : union_find::union_find(n) {}
-    template < class F > int unite(int x, int y, F merge) {
+    // merge(x, y): s[x] <- s[x] + s[y]
+    template < class F >
+    int unite(int x, int y, const F& merge) {
         x = root(x), y = root(y);
-        if(x == y) return -1;
+        if(x == y) return SKIP;
+        num_c--;
         if(size(x) < size(y)) swap(x, y);
         data[x] += data[y];
         data[y] = x;

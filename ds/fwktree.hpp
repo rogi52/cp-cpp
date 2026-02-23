@@ -23,15 +23,15 @@ template < class CMonoid > struct fwktree {
         for(int p = i + 1; p <= n; p += p & -p) a[p] = M::op(a[p], x);
     }
     // [0, r)
-    T pv(int r) {
+    T pv(int r) const {
         T s = M::e();
         for(int p = r; p > 0; p -= p & -p) s = M::op(a[p], s);
         return s;
     }
     // [l, r)
-    T v(int l, int r) { return M::op(M::inv(pv(l)), pv(r)); }
+    T v(int l, int r) const { return M::op(M::inv(pv(l)), pv(r)); }
     // a[i]
-    T v(int i) { return v(i, i + 1); }
+    T v(int i) const { return v(i, i + 1); }
     // a[i] <- x
     void set(int i, T x) { add(i, M::op(M::inv(v(i)), x)); }
 };

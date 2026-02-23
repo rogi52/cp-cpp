@@ -34,3 +34,20 @@ struct lazytree_structure {
     }
 };
 }
+
+namespace alg {
+struct segtree_structure {
+    struct value_structure {
+        struct value_type {
+
+        };
+        using S = value_type;
+        static S op(const S& a, const S& b) {
+            return S{};
+        }
+        static S e() {
+            return S{};
+        }
+    };
+};
+}

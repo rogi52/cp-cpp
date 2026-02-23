@@ -4,21 +4,21 @@
 namespace comb {
 template < class mint > mint fact(int n) {
     static const u32 mod = mint::mod;
-    assert(0 <= n); assert(n < mod); assert(mint::prime);
+    assert(0 <= n); assert(static_cast<u32>(n) < mod); assert(mint::prime);
     static vector<mint> data = {1, 1};
     while(ssize(data) <= n) { const int i = ssize(data); data.push_back(data.back() * i); }
     return data[n];
 }
 template < class mint > mint inv(int n) {
     static const u32 mod = mint::mod;
-    assert(0 <= n); assert(n < mod); assert(mint::prime);
+    assert(0 <= n); assert(static_cast<u32>(n) < mod); assert(mint::prime);
     static vector<mint> data = {1, 1};
     while(ssize(data) <= n) { const int i = ssize(data); data.push_back(-data[mod % i] * (mod / i)); }
     return data[n];
 }
 template < class mint > mint fact_inv(int n) {
     static const u32 mod = mint::mod;
-    assert(0 <= n); assert(n < mod); assert(mint::prime);
+    assert(0 <= n); assert(static_cast<u32>(n) < mod); assert(mint::prime);
     static vector<mint> data = {1, 1};
     while(ssize(data) <= n) { const int i = ssize(data); data.push_back(data.back() * inv<mint>(i)); }
     return data[n];

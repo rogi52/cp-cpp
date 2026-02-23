@@ -1,99 +1,88 @@
 #include "template.hpp"
+#include "ds/bit_vector.hpp"
 
-
-struct bit_vector {
-    using u8 = unsigned char;
-    vector<u64> buf;
-    vector<int> sum;
-    bit_vector() {}
-    bit_vector(const vector<u8>& a) {
-        const int n = ssize(a);
-        const int m = (n + 63) >> 6;
-        buf.assign(m, 0);
-        sum.assign(m + 1, 0);
-        FOR(i, n) if(a[i]) {
-            buf[i >> 6] |= u64(1) << (i & 63);
-            sum[(i >> 6) + 1] += 1;
-        }
-        FOR(i, m) sum[i + 1] += sum[i];
-    }
-    int rank(int k, int f = 1) {
-        const int res = sum[k >> 6] + popcount(buf[k >> 6] & ((u64(1) << (k & 63)) - 1));
-        return f ? res : k - res;
-    }
-};
-
-// Wavelet Matrix
-// max(Int) < 2^LG
-template < class Int, int Lg > struct wavemat {
-    using u8 = unsigned char;
+// 0 <= Int < 2^LG
+// O(N * LG)
+// 座圧すれば O(N log N)
+template < class Int, int LG > struct wavemat {
     int n;
     vector<int> mid;
     vector<bit_vector> buf;
-    Int INF;
-    wavemat(vector<Int> a) : n(ssize(a)), mid(Lg), buf(Lg), INF(Int(1) << Lg) {
-        vector<u8> b(n);
-        REV(d, Lg) {
-            vector<Int> nxt[2];
-            FOR(i, n) nxt[b[i] = a[i] >> d & 1].push_back(a[i]);
-            mid[d] = ssize(nxt[0]);
-            buf[d] = bit_vector(b);
-            a.clear();
-            a.insert(a.end(), nxt[0].begin(), nxt[0].end());
-            a.insert(a.end(), nxt[1].begin(), nxt[1].end());
+    const Int INF;
+    wavemat(vector<Int> a) : n(ssize(a)), mid(LG), buf(LG, bit_vector(n)), INF(Int(1) << LG) {
+        REV(d, LG) {
+            vector<Int> n_a;
+            n_a.reserve(n);
+            FOR(i, n) if((a[i] >> d & 1) == 0) n_a.push_back(a[i]);
+            mid[d] = ssize(n_a);
+            FOR(i, n) if((a[i] >> d & 1) == 1) n_a.push_back(a[i]), buf[d].set(i);
+            buf[d].build();
+            a = move(n_a);
         }
     }
 
-    // count x
-    int rank(int l, int r, Int x) {
-        if(l == r) return 0;
-        if(INF <= x) return 0;
-        REV(d, Lg) {
+    // [l, r) に値 x が何個あるか
+    int rank(int l, int r, Int x) const {
+        assert(0 <= l and l <= r and r <= n);
+        assert(0 <= x and x < INF);
+        REV(d, LG) {
             const int f = x >> d & 1;
             l = buf[d].rank(l, f) + (f ? mid[d] : 0);
             r = buf[d].rank(r, f) + (f ? mid[d] : 0);
         }
         return r - l;
     }
-    // k-th smallest
-    Int quantile(int l, int r, int k) {
+    // [l, r) で k 番目 (0-indexed) に小さい値
+    Int quantile(int l, int r, int k) const {
+        assert(0 <= l and l <= r and r <= n);
+        assert(0 <= k and k < r - l);
         Int ans = 0;
-        REV(d, Lg) {
-            const int l2 = buf[d].rank(l, 0);
-            const int r2 = buf[d].rank(r, 0);
-            if(k < r2 - l2) {
-                l = l2;
-                r = r2;
+        REV(d, LG) {
+            const int c0 = buf[d].count(l, r, 0);
+            if(k < c0) {
+                l = buf[d].rank(l, 0);
+                r = buf[d].rank(r, 0);
             } else {
-                k -= r2 - l2;
                 ans |= Int(1) << d;
-                l += mid[d] - l2;
-                r += mid[d] - r2;
+                k -= c0;
+                l = buf[d].rank(l, 1) + mid[d];
+                r = buf[d].rank(r, 1) + mid[d];
             }
         }
         return ans;
     }
-    // count *<x
-    int freq(int l, int r, Int x) {
-        if(INF <= x) return r - l;
-        Int ans = 0;
-        REV(d, Lg) {
+    // [l, r) で値が x 未満の要素数
+    int freq(int l, int r, Int x) const {
+        assert(0 <= l and l <= r and r <= n);
+        assert(0 <= x and x <= INF);
+        if(x == INF) return r - l;
+        int cnt = 0;
+        REV(d, LG) {
             const int f = x >> d & 1;
-            if(f) ans += buf[d].rank(r, 0) - buf[d].rank(l, 0);
+            if(f) cnt += buf[d].count(l, r, 0);
             l = buf[d].rank(l, f) + (f ? mid[d] : 0);
             r = buf[d].rank(r, f) + (f ? mid[d] : 0);
         }
-        return ans;
+        return cnt;
     }
-    int freq(int l, int r, Int lx, Int rx) {
+    // [l, r) で値 x が [lx, rx) に含まれる要素数
+    int freq(int l, int r, Int lx, Int rx) const {
+        assert(0 <= l and l <= r and r <= n);
+        assert(0 <= lx and lx <= rx and rx <= INF);
         return freq(l, r, rx) - freq(l, r, lx);
     }
-    Int prev(int l, int r, Int x) {
+    // x 未満で最大の要素 (存在しない場合 INF)
+    Int prev(int l, int r, Int x) const {
+        assert(0 <= l and l <= r and r <= n);
+        assert(0 <= x and x <= INF);
         const int c = freq(l, r, x);
-        return c == r - l ? INF : quantile(l, r, c);
+        return c != 0 ? quantile(l, r, c - 1) : INF;
     }
-    Int next(int l, int r, Int x) {
+    // x 以上で最小の要素 (存在しない場合 INF)
+    Int next(int l, int r, Int x) const {
+        assert(0 <= l and l <= r and r <= n);
+        assert(0 <= x and x <= INF);
         const int c = freq(l, r, x);
-        return c == 0 ? INF : quantile(l, r, c - 1);
+        return c != r - l ? quantile(l, r, c) : INF;
     }
 };

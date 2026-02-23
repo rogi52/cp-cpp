@@ -7,6 +7,7 @@ template < class Monoid > struct disjoint_sparse_table {
     using T = typename M::value_type;
     int n;
     vector<vector<T>> t;
+    disjoint_sparse_table() {}
     disjoint_sparse_table(const vector<T>& a) : n(ssize(a)) {
         const int m = 32 - __builtin_clz(n + 1);
         t.assign(m, vector(n + 2, M::e()));
@@ -23,6 +24,7 @@ template < class Monoid > struct disjoint_sparse_table {
         assert(0 <= i and i < n);
         return prod(i, i + 1);
     }
+    // [l, r)
     T prod(int l, int r) const {
         assert(0 <= l and l <= r and r <= n);
         r++;

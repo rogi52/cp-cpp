@@ -1,3 +1,4 @@
+#pragma once
 #include "template.hpp"
 
 struct treeHLD {
@@ -18,30 +19,31 @@ struct treeHLD {
         decomped = true;
     }
 
-    template < class Func > void path_query_comm(int u, int v, bool vertex, const Func& f) {
+    template < class Func > void path_query_comm(int u, int v, bool vertex, const Func& f) const {
         assert(decomped);
         const int x = lca(u, v);
         for(auto [a, b] :  ascend(u, x)) tie(a, b) = minmax({a, b}), f(a, b);
         if(vertex) f(L[x], L[x] + 1);
         for(auto [a, b] : descend(x, v)) tie(a, b) = minmax({a, b}), f(a, b);
     }
-    template < class Func > void path_query(int u, int v, bool vertex, const Func& f) {
+    template < class Func > void path_query(int u, int v, bool vertex, const Func& f) const {
         assert(decomped);
         const int x = lca(u, v);
         for(auto [a, b] :  ascend(u, x)) f(a, b);
         if(vertex) f(L[x], L[x] + 1);
         for(auto [a, b] : descend(x, v)) f(a, b);
     }
-    template < class Func > void subtree_query(int v, bool vertex, const Func& f) {
+    template < class Func > void subtree_query(int v, bool vertex, const Func& f) const {
         assert(decomped);
         f(L[v] + !vertex, R[v]);
     }
 
-    int parent(int v) {
+    // v != root ? parent[v] : -1
+    int parent(int v) const {
         assert(decomped);
         return v == root ? -1 : par[v];
     }
-    int la(int v, int d) {
+    int la(int v, int d) const {
         assert(decomped);
         while(v != -1) {
             const int u = nxt[v];
@@ -51,17 +53,17 @@ struct treeHLD {
         }
         return v;
     }
-    int lca(int u, int v) {
+    int lca(int u, int v) const {
         assert(decomped);
         for(; nxt[u] != nxt[v]; u = par[nxt[u]]) if(L[u] < L[v]) swap(u, v);
         return D[u] < D[v] ? u : v;
     }
     // 辺の本数
-    int dist(int u, int v) {
+    int dist(int u, int v) const {
         assert(decomped);
         return D[u] + D[v] - D[lca(u, v)] * 2;
     }
-    int jump(int u, int v, int d) {
+    int jump(int u, int v, int d) const {
         assert(decomped);
         const int D_x = D[lca(u, v)];
         if(d <= D[u] - D_x) return la(u, d);
@@ -69,25 +71,36 @@ struct treeHLD {
         if(d <= D[v] - D_x) return la(v, D[v] - D_x - d);
         return -1;
     }
-    int in_subtree(int r, int v) {
+    int in_subtree(int r, int v) const {
         assert(decomped);
         return L[r] < L[v] and R[v] <= R[r];
     }
-    pair<int, int> seq_seg(int v) {
+    pair<int, int> seq_seg(int v) const {
         assert(decomped);
         return {L[v], R[v]};
     }
-    int seq_pos(int v) {
+    int seq_pos(int v) const {
         assert(decomped);
         return L[v];
     }
-    int depth(int v) {
+    int seq_end(int v) const {
+        assert(decomped);
+        return R[v];
+    }
+    int depth(int v) const {
         assert(decomped);
         return D[v];
     }
-    int subtree_size(int v) {
+    int subtree_size(int v) const {
         assert(decomped);
         return S[v];
+    }
+    int euler(int i) const {
+        assert(decomped);
+        return E[i];
+    }
+    bool is_decomped() const {
+        return decomped;
     }
 
   private:
@@ -116,14 +129,14 @@ struct treeHLD {
         }
         R[v] = id;
     }
-    vector<pair<int, int>> ascend(int u, int v) {
+    vector<pair<int, int>> ascend(int u, int v) const {
         assert(decomped);
         vector<pair<int, int>> res;
         for(; nxt[u] != nxt[v]; u = par[nxt[u]]) res.push_back({L[u] + 1, L[nxt[u]]});
         if(u != v) res.push_back({L[u] + 1, L[v] + 1});
         return res;
     }
-    vector<pair<int, int>> descend(int u, int v) {
+    vector<pair<int, int>> descend(int u, int v) const {
         assert(decomped);
         if(u == v) return {};
         if(nxt[u] == nxt[v]) return {{L[u] + 1, L[v] + 1}};

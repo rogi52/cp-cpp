@@ -23,12 +23,12 @@ template < class Monoid > struct segtree {
         FOR(p, 1, lg + 1) update(i >> p);
     }
     // a[i]
-    T v(int i) {
+    T v(int i) const {
         assert(0 <= i and i < n);
         return a[i + sz];
     }
     // [l, r)
-    T v(int l, int r) {
+    T v(int l, int r) const {
         assert(0 <= l and l <= r and r <= n);
         T sl = M::e(), sr = M::e();
         for(l += sz, r += sz; l < r; l >>= 1, r >>= 1) {
@@ -38,7 +38,7 @@ template < class Monoid > struct segtree {
         return M::op(sl, sr);
     }
     // [0, n)
-    T av() { return a[1]; }
+    T av() const { return a[1]; }
 
     template < class F > int max_right(int l, F f) {
         assert(0 <= l and l <= n);

@@ -2,6 +2,7 @@
 #include "ds/segtree.hpp"
 #include "alg/minmax.hpp"
 
+// slow...
 struct suffix_array {
     int n;
     string s;

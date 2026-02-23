@@ -121,6 +121,14 @@ auto Q3 = [&]{
 オフラインの実装: https://codeforces.com/contest/1638/submission/347045852
 */
 
+/*
+ABC256-Ex I like Query Problem
+https://atcoder.jp/contests/abc256/submissions/73026721
+for_each_range() 内で直接書き換えるのではなく，
+書き換えクエリを貯めておく．計算量は悪化しない．
+*/
+
+// [0, N) が小さい場合に高速．
 template < class Value > struct DIU_o {
     const int MIN, MAX;
     Value NONE;
