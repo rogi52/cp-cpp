@@ -97,3 +97,64 @@ template < class Int, int LG > struct binary_trie_set {
         return kth(0);
     }
 };
+
+
+template < class Int, int LG > struct binary_trie_multiset {
+    static constexpr int ROOT = 0;
+    struct node_type {
+        array<int, 2> to;
+        int cnt;
+        node_type() : cnt(0) { to.fill(-1); }
+    };
+    vector<node_type> node;
+    Int XOR;
+    binary_trie_multiset() : node(1), XOR(0) {}
+
+    void xor_all(Int x) { XOR ^= x; }
+    int size() const { return node[ROOT].cnt; }
+    bool empty() const { return size() == 0; }
+
+    void insert(Int x) {
+        x ^= XOR;
+        int now = ROOT;
+        node[now].cnt += 1;
+        REV(i, LG) {
+            const int k = x >> i & 1;
+            if(node[now].to[k] == -1) {
+                node[now].to[k] = node.size();
+                node.push_back(node_type());
+            }
+            now = node[now].to[k];
+            node[now].cnt += 1;
+        }
+    }
+
+    // [0, val) の個数
+    int count(Int val) const {
+        if(val >= (Int(1) << LG)) return size();
+        int now = ROOT;
+        int res = 0;
+        REV(i, LG) {
+            if(now == -1) break;
+            int bit_val = val >> i & 1;
+            int side = XOR >> i & 1;
+            
+            int zero_node = node[now].to[0 ^ side];
+            int one_node  = node[now].to[1 ^ side];
+
+            if(bit_val == 1) {
+                if (zero_node != -1) res += node[zero_node].cnt;
+                now = one_node;
+            } else {
+                now = zero_node;
+            }
+        }
+        return res;
+    }
+
+    // [L, R) の個数
+    int count(Int L, Int R) const {
+        if(L >= R) return 0;
+        return count(R) - count(L);
+    }
+};

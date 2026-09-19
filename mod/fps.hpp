@@ -1,3 +1,4 @@
+#pragma once
 #include "template.hpp"
 #include "mod/ntt.hpp"
 #include "mod/binom.hpp"
@@ -306,5 +307,24 @@ vector<mint> pow_sparse(vector<pair<int, mint>> f, i64 e, int n) {
     FOR(i, m) g[i] *= ce;
     g.insert(g.begin(), o, 0);
     return g;
+}
+
+template < class mint >
+void prod_sparse_inplace(vector<mint>& f, const vector<pair<int, mint>>& g) {
+    const int n = ssize(f);
+    mint g0 = 0;
+    vector<pair<int, mint>> g_pos;
+    for(const auto& [d, c] : g) {
+        if(d == 0) {
+            g0 += c;
+        } else {
+            g_pos.push_back({d, c});
+        }
+    }
+    REV(i, n) {
+        mint fi = f[i] * g0;
+        for(const auto& [d, c] : g_pos) if(d <= i) fi += f[i - d] * c;
+        f[i] = fi;
+    }
 }
 } // namespace fps

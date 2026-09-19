@@ -3,6 +3,7 @@
 #include "alg/with_size.hpp"
 #include "alg/set.hpp"
 
+// {x, 1} に初期化が必要
 namespace alg {
 template < class T, T none = T(-1) > struct range_set_range_sum {
     using value_structure = with_size< sum< T >, int >;

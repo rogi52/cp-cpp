@@ -30,6 +30,32 @@ template < class Key, class Value > struct DIU {
         return {l, r, vl};
     }
 
+    // x 以上で最初に現れる NONE でない区間
+    // CODE FESTIVAL 2015 予選B D問題 (https://atcoder.jp/contests/code-festival-2015-qualb/tasks/codefestival_2015_qualB_d)
+    tuple<Key, Key, Value> get_next(Key x) {
+        auto it = mp.upper_bound(x);
+        auto p = prev(it);
+        if(p->second != NONE) {
+            return {max(x, p->first), it->first, p->second};
+        } else {
+            if(it->first == MAX) return {MAX, MAX, NONE}; // 存在しない場合
+            return {it->first, next(it)->first, it->second};
+        }
+    }
+
+    // x 以下で最初に現れる NONE でない区間
+    tuple<Key, Key, Value> get_prev(Key x) {
+        auto it = mp.upper_bound(x);
+        auto p = prev(it);
+        if (p->second != NONE) {
+            return {p->first, min(x + 1, it->first), p->second};
+        } else {
+            if (p->first == MIN) return {MIN, MIN, NONE}; // 存在しない場合
+            auto pp = prev(p);
+            return {pp->first, p->first, pp->second};
+        }
+    }
+
     template < class F > void for_each_range(Key l, Key r, const F& f, bool erase = false) {
         assert(MIN <= l and l <= r and r <= MAX);
         if(erase) {
@@ -156,6 +182,35 @@ template < class Value > struct DIU_o {
             merge(r);
         }
         return {l, r, v};
+    }
+
+    // x 以上で最初に現れる NONE でない区間
+    tuple<int, int, Value> get_next(int x) {
+        if (x >= MAX) return {MAX, MAX, NONE};
+        int l = st.prev(x);
+        int r = st.next(x + 1);
+        if (dat[l] != NONE) {
+            return {max(x, l), r, dat[l]};
+        } else {
+            if (r >= MAX) return {MAX, MAX, NONE};
+            int nr = st.next(r + 1);
+            return {r, nr, dat[r]};
+        }
+    }
+
+    // x 以下で最初に現れる NONE でない区間
+    tuple<int, int, Value> get_prev(int x) {
+        if (x < MIN) return {MIN, MIN, NONE};
+        int l = st.prev(x);
+        int r = st.next(x + 1);
+        
+        if (dat[l] != NONE) {
+            return {l, min(x + 1, r), dat[l]};
+        } else {
+            if (l <= MIN) return {MIN, MIN, NONE};
+            int pl = st.prev(l - 1);
+            return {pl, l, dat[pl]};
+        }
     }
 
     template < class F > void for_each_range(int l, int r, const F& f, bool erase = false) {

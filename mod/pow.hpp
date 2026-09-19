@@ -1,3 +1,4 @@
+#pragma once
 #include "template.hpp"
 
 u64 modpow64(u64 a, u64 n, u64 mod) {

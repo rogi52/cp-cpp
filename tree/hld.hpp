@@ -5,8 +5,8 @@ struct treeHLD {
     int n, root;
     struct edge { int to, i; };
     vector<vector<edge>> g;
-    treeHLD(int n) : n(n), g(n), S(n, 0), D(n, 0), L(n, -1), R(n, -1), E(n, -1), id(0), decomped(0) {}
-    void add_edge(int u, int v, int i = 0) {
+    treeHLD(int n) : n(n), g(n), S(n, 0), D(n, 0), L(n, -1), R(n, -1), E(n, -1), V2E(n, -1), E2V(n - 1, -1), id(0), decomped(0) {}
+    void add_edge(int u, int v, int i) {
         g[u].push_back({v, i});
         g[v].push_back({u, i});
     }
@@ -102,10 +102,25 @@ struct treeHLD {
     bool is_decomped() const {
         return decomped;
     }
+    int v_to_e(int v) const {
+        assert(0 <= v and v < n);
+        return V2E[v];
+    }
+    int e_to_v(int e) const {
+        assert(0 <= e and e < n - 1);
+        return E2V[e];
+    }
+    int centroid(int r, int v_ignore, int sz) const {
+        return E[bin_search<int>(L[r], R[r], [&](int i) {
+            const int x = E[i];
+            if(nxt[x] != nxt[r]) return false;
+            return S[x] - (v_ignore != -1 and in_subtree(x, v_ignore) ? S[v_ignore] : 0) > sz;
+        })];
+    }
 
   private:
     int id, decomped;
-    vector<int> S, D, L, R, nxt, par, E;
+    vector<int> S, D, L, R, nxt, par, E, V2E, E2V;
     void dfs0(int v) {
         S[v] = 1;
         for(edge& e : g[v]) {
@@ -115,6 +130,8 @@ struct treeHLD {
             }
             D[e.to] = D[v] + 1;
             par[e.to] = v;
+            V2E[e.to] = e.i;
+            E2V[e.i] = e.to;
             dfs0(e.to);
             S[v] += S[e.to];
             if(S[e.to] > S[g[v][0].to]) swap(e, g[v][0]);

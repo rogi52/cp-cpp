@@ -1,34 +1,11 @@
+#pragma once
 #include "template.hpp"
 #include "mod/pow.hpp"
-#include "rnd.hpp"
-
-// n is prime? judge by witness. 
-bool miller_rabin(u64 n, vector<u64> witness) {
-    if(n == 1) return false;
-    if(n % 2 == 0) return n == 2;
-    u64 d = n - 1;
-    while(d % 2 == 0) d /= 2;
-    for(u64 a : witness) if(a < n) {
-        u64 y = modpow64(a, d, n), t = d;
-        while(t != n - 1 and y != 1 and y != n - 1) {
-            y = u128(y) * y % n;
-            t *= 2;
-        }
-        if(y != n - 1 and t % 2 == 0) return false;
-    }
-    return true;
-}
-
-// n is prime?
-bool prime_test(u64 n) {
-    if(n < (u64(1) << 32)) return miller_rabin(n, {2, 7, 61});
-    return miller_rabin(n, {2, 325, 9375, 28178, 450775, 9780504, 1795265022});
-}
 
 // return non-trivial divisor
 u64 pollard_rho(u64 n) {
     if(n % 2 == 0) return 2;
-    if(prime_test(n)) return n;
+    if(nt::prime_test(n)) return n;
     while(true) {
         u64 R = rnd::i<u64>(2, n), x, y = rnd::i<u64>(2, n), ys, q = 1, g = 1, m = 128;
         auto f = [&](u64 x) {
@@ -80,5 +57,37 @@ vector<pair<u64, i32>> factor_pair(u64 n) {
 u64 euler_phi(u64 n) {
     vector<pair<u64,i32>> pf = factor_pair(n);
     for(auto [p, e] : pf) n -= n / p;
+    return n;
+}
+u64 euler_phi(i64 n, const vector<pair<u64, i32>>& pf) {
+    for(auto [p, e] : pf) n -= n / p;
+    return n;
+}
+
+vector<u64> divisor(const vector<pair<u64, i32>>& pf) {
+    vector<u64> ds = {1};
+    for(auto [p, e] : pf) {
+        FOR(i, ssize(ds)) {
+            u64 x = 1;
+            FOR(j, e) x *= p, ds.push_back(ds[i] * x);
+        }
+    }
+    sort(ds);
+    return ds;
+}
+
+u64 order(u64 x, u64 p, const vector<pair<u64, int>>& pf) {
+    u64 ord = p - 1;
+    for(auto [q, e] : pf) {
+        FOR(e) {
+            if(modpow64(x, ord / q, p) == 1) ord /= q;
+            else break;
+        }
+    }
+    return ord;
+}
+
+u64 euler_phi(u64 n, const vector<pair<u64, int>>& pf_n) {
+    for(auto [p, e] : pf_n) n -= n / p;
     return n;
 }

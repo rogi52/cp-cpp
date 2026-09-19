@@ -1,5 +1,4 @@
 #include "template.hpp"
-#include "rnd.hpp"
 
 template < class hvec > struct ss_hash {
     static const hvec b;
@@ -7,6 +6,12 @@ template < class hvec > struct ss_hash {
     vector<hvec> h;
     ss_hash() {}
     ss_hash(const string& s) {
+        const int n = s.size();
+        h.resize(n + 1); h[0] = hvec(0);
+        FOR(i, n) h[i + 1] = h[i] * b + hvec(s[i]);
+    }
+    template < class Int >
+    ss_hash(const vector<Int>& s) {
         const int n = s.size();
         h.resize(n + 1); h[0] = hvec(0);
         FOR(i, n) h[i + 1] = h[i] * b + hvec(s[i]);
