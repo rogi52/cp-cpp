@@ -1,4 +1,7 @@
 #pragma once
+/*
+Library: https://github.com/rogi52/cp-cpp
+*/
 #include <algorithm>
 #include <array>
 #include <bit>
