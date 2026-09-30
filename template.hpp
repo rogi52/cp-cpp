@@ -206,7 +206,7 @@ template <class Head, class... Tail> int print(Head &&h, Tail &&...t) {
   cout << h;
   if (sizeof...(Tail))
     cout << ' ';
-  return print(forward<Tail>(t)...);
+  return print(std::forward<Tail>(t)...);
 }
 namespace printer {
 void prec(int n) { cout << fixed << setprecision(n); }
